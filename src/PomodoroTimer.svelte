@@ -13,6 +13,9 @@
   // Pomodoro time left
   let pomodoroTime = POMODORO_S;
 
+  const State = { idle: "idle", inProgress: "in progress", resting: "resting" };
+  let currentState = State.idle;
+
   function formatTime(timeInSeconds) {
     const minutes = secondsToMinutes(timeInSeconds);
     const remainingSeconds = timeInSeconds % 60;
@@ -20,7 +23,9 @@
   }
 
   let interval;
+
   function startPomo() {
+    currentState = State.inProgress;
     interval = setInterval(() => {
       if (pomodoroTime === 0) {
         completePomodoro();
@@ -43,6 +48,7 @@
   }
 
   function rest(time) {
+    currentState = State.resting;
     pomodoroTime = time;
     interval = setInterval(() => {
       if (pomodoroTime === 0) {
@@ -53,6 +59,7 @@
   }
 
   function idle() {
+    currentState = State.idle;
     clearInterval(interval);
     pomodoroTime = POMODORO_S;
   }
@@ -64,8 +71,21 @@
   }
 </script>
 
+<style>
+  time {
+    display: block;
+    font-size: 5em;
+    font-weight: 300;
+    margin-bottom: 0.2em;
+  }
+</style>
+
 <section>
-  <p>{formatTime(pomodoroTime)}</p>
-  <button on:click={startPomo}>start</button>
-  <button on:click={cancelPomo}>cancel</button>
+  <time>{formatTime(pomodoroTime)}</time>
+  <button on:click={startPomo} disabled={currentState !== State.idle}>
+    start
+  </button>
+  <button on:click={cancelPomo} disabled={currentState !== State.inProgress}>
+    cancel
+  </button>
 </section>
