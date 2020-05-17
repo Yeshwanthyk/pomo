@@ -11,6 +11,8 @@
     new Task("Manchvegas")
   ];
 
+  $: allExpectedTasks = tasks.reduce((acc, t) => acc + t.actualPomodoros, 0);
+
   function addTask() {
     //   tasks.push won't work because svelte works with change in
     //   assignment
@@ -45,20 +47,28 @@
   }
 </style>
 
-<ul>
-  {#each tasks as task}
-    <li>
-      <input
-        class="description"
-        type="text"
-        bind:value={task.description}
-        bind:this={lastInput} />
-      <input
-        class="pomodoro"
-        type="number"
-        bind:value={task.expectedPomodoros} />
-    </li>
-    <button on:click={() => removeTask(task)}>X</button>
-  {/each}
-</ul>
+{#if tasks.length === 0}
+  <p>Add a task. You can do it!</p>
+{:else}
+  <ul>
+    {#each tasks as task}
+      <li>
+        <input
+          class="description"
+          type="text"
+          bind:value={task.description}
+          bind:this={lastInput} />
+        <input
+          class="pomodoro"
+          type="number"
+          bind:value={task.expectedPomodoros} />
+      </li>
+      <button on:click={() => removeTask(task)}>X</button>
+    {/each}
+  </ul>
+{/if}
 <button on:click={addTask}>Add a new task</button>
+
+{#if tasks.length !== 0}
+  <p>Today you'll complete {allExpectedTasks} pomodoros.</p>
+{/if}
