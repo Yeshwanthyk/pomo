@@ -2,6 +2,9 @@
   import { afterUpdate } from "svelte";
   import { Task } from "./Task.js";
 
+  let taskAddedFocusPending = true;
+  let lastInput;
+
   let tasks = [
     new Task("Slingshot"),
     new Task("Riverbeast"),
@@ -12,12 +15,22 @@
     //   tasks.push won't work because svelte works with change in
     //   assignment
     tasks = tasks.concat(new Task());
+    taskAddedFocusPending = true;
   }
 
   function removeTask(task) {
     const index = tasks.indexOf(task);
     tasks = [...tasks.slice(0, index), ...tasks.slice(index + 1)];
   }
+
+  function focusNewTask() {
+    if (taskAddedFocusPending && lastInput) {
+      lastInput.focus();
+      taskAddedFocusPending = false;
+    }
+  }
+
+  afterUpdate(focusNewTask);
 </script>
 
 <style>
@@ -35,7 +48,11 @@
 <ul>
   {#each tasks as task}
     <li>
-      <input class="description" type="text" bind:value={task.description} />
+      <input
+        class="description"
+        type="text"
+        bind:value={task.description}
+        bind:this={lastInput} />
       <input
         class="pomodoro"
         type="number"
