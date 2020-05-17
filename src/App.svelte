@@ -1,6 +1,7 @@
 <script>
   export let title = "Pomo";
   import TaskList from "./TaskList.svelte";
+  import PomodoroTimer from "./PomodoroTimer.svelte";
 </script>
 
 <style>
@@ -27,5 +28,6 @@
 
 <main>
   <h1>{title}!</h1>
+  <PomodoroTimer />
   <TaskList />
 </main>
